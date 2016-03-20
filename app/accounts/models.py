@@ -57,6 +57,14 @@ class Teacher(models.Model):
     titles_after = models.CharField(max_length=50, blank=True, null=False, default="")
     #classroom = models.ForeignKey(to=Classroom, blank=True, null=True, related_name="classmaster")
 
+    def subjects_list(self):
+        return ', '.join(s.acronym for s in self.subjectclass_set.all())
+    subjects_list.short_description = _("subjects")
+
+    def courses_list(self):
+        return ', '.join(s.acronym for s in self.course_set.all())
+    courses_list.short_description = _("courses")
+
     def get_titled_name(self):
         out = ""
         if self.titles_before:
