@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^logout/?$', auth_views.logout, {'next_page': '/login'}),
     url(r'^login/?$', auth_views.login, {'template_name': 'login.html', }),
     url(r'^dashboard/?$', frontend_views.dashboard),
+    url(r'^courses/?$', frontend_views.courses),
 ]

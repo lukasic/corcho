@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ _("Courses") }}{% endblock %}
+{% block content_title %}{{ _("Information about courses") }}{% endblock %}
+
+{% block include_into_head %}
+	<link href="/static/js/faq.css" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+<div>
+	{% if courses %}
+	<h3>{{ _("Search") }}</h3>
+	<br />
+	<ol class="faq-list">
+		{% for course in courses %}
+	    <li>
+	        <h4>{{ course.name }}</h4>
+	        <h5>{{ _("Category") }}: {{ course.category }}</h5>
+	        {% if course.info_goal %}<p><b>{{ _("Goal") }}:</b> {{ course.info_goal }}</p>{% endif %}
+	        {% if course.info_content %}<p><b>{{ _("Content") }}:</b> {{ course.info_content }}</p>{% endif %}
+	        {% if course.info_anotations %}<p><b>{{ _("Annotations") }}:</b><br/>
+	        	<div style="margin-top: -10px; padding-left: 5px; border-left: 2px solid silver;">{{ course.info_anotations | safe }}</div></p>{% endif %}
+	        {% if course.teachers.all %}<p><b>{{ _("Teachers") }}:</b> {{ course.teachers_str }}</p>{% endif %}
+	    </li>
+	    {% endfor %}
+	</ol>
+	{% else %}
+	<p>{{ _("No courses.") }}</p>
+	{% endif %}
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+	<script src="/static/js/faq.js"></script>
+
+	<script>
+		$(function () {
+			$('.faq-list').goFaq ();
+		});
+	</script>
+{% endblock %}

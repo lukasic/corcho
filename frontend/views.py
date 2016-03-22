@@ -21,3 +21,12 @@ def is_teacher(user):
 def dashboard(request):
     if is_student(request.user): return render(request, 'student/dashboard.html', {})
     if is_teacher(request.user): return render(request, 'teacher/dashboard.html', {})
+
+
+def courses(request):
+    context = {
+        'categories': CourseCategory.objects.all(),
+        'courses': Course.objects.filter(active=True),
+    }
+    return render(request, "pages/courses.html", context)
+
