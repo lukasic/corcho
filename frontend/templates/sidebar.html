@@ -1,0 +1,28 @@
+ <div class="col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
+
+	<ul class="nav nav-sidebar">
+		<li {% if request.path == "/dashboard" %}class="active"{% endif %}><a href="/dashboard">{{ _("Dashboard") }}</a></li>
+	</ul>
+
+	{% if user.student %}
+	<ul class="nav nav-sidebar">
+		<li><p style="margin: 0 10px; color: lightblue;">{{ _("Student") }}</p></li>
+		<li {% if request.path == "/courses" %}class="active"{% endif %}><a href="/courses">{{ _("All courses") }}</a></li>
+	</ul>
+	{% endif %}
+
+	{% if user.teacher %}
+	<ul class="nav nav-sidebar">
+		<li><p style="margin: 0 10px; color: lightblue;">{{ _("Teacher") }}</p></li>
+		<li {% if request.path == "/teacher/courses-edit" %}class="active"{% endif %}><a href="/teacher/courses-edit">{{ _("Course editation") }}</a></li>
+	</ul>
+	 {% endif %}
+
+	{% if user.is_superuser %}
+	<ul class="nav nav-sidebar">
+		<li><p style="margin: 0 10px; color: lightblue;">{{ _("Administrator") }}</p></li>
+		<li><a href="/admin/">{{ _("Administration") }}</a></li>
+	</ul>
+	{% endif %}
+
+</div><!--/span-->

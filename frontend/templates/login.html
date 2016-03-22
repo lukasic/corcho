@@ -1,0 +1,74 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<title>{% block title %}{{ settings.APPLICATION_NAME }}{% endblock %}</title>
+		<meta name="generator" content="Bootply" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+		<link href="/static/css/styles.css" rel="stylesheet" />
+	</head>
+
+	<body>
+
+		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">{{ settings.APPLICATION_TITLE }}</a>
+				</div>
+			</div>
+		</nav>
+
+		<div class="container-fluid">
+			<div class="row row-offcanvas row-offcanvas-left">
+				<div class="col-sm-12 col-md-12 main">
+					<h1 class="page-header">{{ _("Log in") }}</h1>
+					<div class="row main">
+						<div class="col-lg-3 col-sm-3 col-12">
+							<form class="form-horizontal" method="POST">
+								{% csrf_token %}
+								<fieldset>
+									<div class="form-group">
+										<label c for="username">{% trans "Username" %}</label>
+										<div class="controls">
+											<input type="text" id="username" name="username" placeholder="" class="form-control input-xlarge ">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="password">{{ _("Password") }}</label>
+										<div class="controls">
+											<input type="password" id="password" name="password" placeholder="" class="form-control input-xlarge">
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="controls">
+											<button class="btn btn-success">{{ _("Login") }}</button>
+										</div>
+									</div>
+								</fieldset>
+							</form>
+						</div>
+
+						<div class="col-sm-6 col-md-6"></div>
+						<div class="col-sm-2 col-md-2"></div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<footer>
+			<p class="pull-right" style="font-size: smaller;">{{ settings.SYSTEM_NAME }} {{ settings.SYSTEM_VERSION }} | © {{ YEAR }} <a href="{{ settings.ADMIN_LINK }}">{{ settings.ADMIN_NAME }}</a></p>
+		</footer>
+
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+		<script src="/static/js/bootstrap.min.js"></script>
+		<script src="/static/js/scripts.js"></script>
+
+	</body>
+</html>

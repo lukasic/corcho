@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -56,6 +58,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'frontend.context_processors.app_settings',
             ],
         },
     },
@@ -108,3 +111,29 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+#
+# Login
+#
+
+LOGIN_URL = '/login'
+LOGIN_REDIRECT_URL = '/dashboard'
+
+#
+# Instance
+#
+
+APPLICATION_NAME = "CorCho"
+APPLICATION_TITLE = "Courses Choosing"
+
+# Footer info
+ADMIN_LINK = "mailto:lukas@kasic.sk"
+ADMIN_NAME = "Lukáš Kasič"
+
+# Footer info
+SYSTEM_NAME = "CorCho"
+SYSTEM_VERSION = "150321b1"
+
+
+
