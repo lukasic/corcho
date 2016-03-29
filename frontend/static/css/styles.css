@@ -227,6 +227,10 @@ input {
     width: 10%;
 }
 
+.width-15perc {
+    width: 15%;
+}
+
 .width-20perc {
     width: 20%;
 }

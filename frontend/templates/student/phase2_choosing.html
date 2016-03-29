@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ _("Courses choosing") }}{% endblock %}
+{% block content_title %}{{ _("Courses choosing") }}{% endblock %}
+
+{% block content %}
+<div>
+    {% for group in groups %}
+  <h3 class="sub-header">{{ group.choosing.name }}</h3>
+  <hr/>
+    {% if group.course_set.count %}
+  <div class="table-responsive">
+    <table class="table table-striped" style="border: 1px solid #ddd;">
+      <thead>
+        <tr>
+          <th>{{ _("Name") }}</th>
+          <th>{{ _("Action") }}</th>
+          <th>{{ _("State") }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in group.rows %}
+        <tr>
+          {% if row.course in group.denied_courses %}
+          <td><a href="#" style="color: grey; text-decoration: line-through;">{{ row.course.name }}</a></td>
+          {% else %}
+          <td><a href="#">{{ row.course.name }}</a></td>
+          {% endif %}
+          <td class="width-10perc">
+              {% if row.course in group.denied_courses %}
+              {% elif row.course.id in group.chooses.keys %}
+                {% if row.choose.phase == 0 %}
+                  <a href="#" onclick="delete_choose({{ row.choose.id }})" class="btn btn-danger btn-xs">{{ _("Cancel") }}</a>
+                {% endif %}
+              {% elif group.choosing.courses_max > group.chooses_count %}
+                  <a href="#" onclick="javascript:choose_course({{ group.choosing.id }}, {{ row.course.id }});"
+                    class="btn btn-primary btn-xs">{{ _("Choose") }}</a>
+              {% else %}
+                    <a href="#" class="btn btn-info btn-xs">{{ _("Reached limit") }}</a>
+              {% endif %}
+            </td>
+            <td class="width-10perc">
+                {% if row.choose.phase == 0 %}
+                  <a href="#" class="btn btn-warning btn-xs">{{ _("Choosed") }}</a>
+                {% elif row.choose.phase == 1 %}
+                  <a href="#" class="btn btn-success btn-xs">{{ _("Approved") }}</a>
+                {% elif row.choose.phase == 2 %}
+                  <a href="#" class="btn btn-danger btn-xs">{{ _("Denied") }}</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+    <span>
+      <div align=right style="border-right: 1px solid #ddd; padding-right: 10px;
+        {% if group.choosing.courses_min <= group.chooses_count and group.chooses_count <= group.choosing.courses_max %}
+          color: green;
+        {% else %}
+          color: red;
+        {% endif %}
+      ">
+        <small>Zapísaných: {{ group.chooses_count }}</small><br/>
+        {% if group.choosing.courses_min == group.choosing.courses_max %}
+          <small>Požadovaných: {{ group.choosing.courses_max }}</small>
+        {% else %}
+          <small>Minimum: {{ group.choosing.courses_min }}, maximum: {{ group.choosing.courses_max }}</small>
+        {% endif %}
+      </div>
+    </span>
+    {% else %}
+        {{ _("No courses in this category") }}
+    {% endif %}
+    <br/>
+    <br/>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+
+  function choose_course(choosing_id, course_id) {
+
+    $.ajax({
+        url: '/api/choose/',
+        type: 'POST',
+        data: 'student={{ user.student.id }}&choosing='+choosing_id+"&course="+course_id+"&phase=0", // or $('#myform').serializeArray()
+        success: function() { location.reload(); },
+        error: function(jqXHR, textStatus, errorThrown) { console.log(jqXHR); console.log(textStatus); console.log(errorThrown); }
+    });
+
+  }
+
+  function delete_choose(choose_id) {
+
+    $.ajax({
+        url: '/api/choose/'+choose_id,
+        type: 'DELETE',
+        success: function() { location.reload(); },
+        error: function(jqXHR, textStatus, errorThrown) { console.log(jqXHR); console.log(textStatus); console.log(errorThrown); }
+    });
+
+  }
+
+</script>
+{% endblock %}

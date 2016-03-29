@@ -8,6 +8,7 @@
 	<ul class="nav nav-sidebar">
 		<li><p style="margin: 0 10px; color: lightblue;">{{ _("Student") }}</p></li>
 		<li {% if request.path == "/courses" %}class="active"{% endif %}><a href="/courses">{{ _("All courses") }}</a></li>
+		<li {% if request.path == "/student/choosing" %}class="active"{% endif %}><a href="/student/choosing">{{ _("Couses choosing") }}</a></li>
 	</ul>
 	{% endif %}
 
