@@ -32,6 +32,10 @@ INSTALLED_APPS = [
 
     # Frontend
     'frontend',
+    'restapi',
+
+    # Support
+    'rest_framework',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -135,5 +139,17 @@ ADMIN_NAME = "Lukáš Kasič"
 SYSTEM_NAME = "CorCho"
 SYSTEM_VERSION = "150321b1"
 
-
-
+#
+# REST Framework
+#
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 100
+}
