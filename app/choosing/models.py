@@ -152,6 +152,8 @@ class Choose(models.Model):
         if self.choosing.phase in (0, 1):
             return
         if self.course in self.choosing.denied_courses.all():
+            if self.phase == 2:
+                return
             raise ValidationError(_('Could not choose denied course.'))
 
     def __repr__(self):
