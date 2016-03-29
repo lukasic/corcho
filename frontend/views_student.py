@@ -51,3 +51,20 @@ def phase2_choosing(request):
     }
 
     return render(request, "student/phase2_choosing.html", context)
+
+
+@login_required
+@user_passes_test(is_student)
+def my_courses(request):
+    confs = get_student_choosings(request.user.student)
+    groups = []
+
+    for choosing in confs:
+        chooses = Choose.objects.filter(choosing=choosing, student__user=request.user)
+        groups.append({'choosing': choosing, 'chooses':chooses})
+
+    context = {
+        'groups': groups
+    }
+
+    return render(request, 'student/my_courses.html', context)

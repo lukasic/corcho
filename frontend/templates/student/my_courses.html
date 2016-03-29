@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ _("My courses") }}{% endblock %}
+{% block content_title %}{{ _("My courses") }}{% endblock %}
+
+{% block content %}
+<div>
+  {% for row in groups %}
+  <h3 class="sub-header">{{ row.choosing.name }}</h3>
+  <hr/>
+    {% if row.chooses.count > 0 %}
+  <div class="table-responsive">
+    <table class="table table-striped" style="border: 1px solid #ddd;">
+      <thead>
+        <tr>
+        <th>{{ _("Name") }}</th>
+        <th class="width-20perc">{{ _("Time") }}</th>
+        <th class="width-10perc">{{ _("State") }}</th>
+        <th class="width-10perc">{{ _("Action") }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for choose in row.chooses %}
+        <tr>
+          {% if choose.phase == 2 %}
+            <td><a href="#" style="color: grey; text-decoration: line-through;">{{ choose.course.name }}</a></td>
+            <td><a href="#" style="color: grey; text-decoration: line-through;">{{ choose.created_at }}</a></td>
+          {% else %}
+            <td><a href="#">{{ choose.course.name }}</a></td>
+            <td class="width-20perc">{{ choose.created_at }}</td>
+          {% endif %}
+
+          <td class="width-10perc">
+            {% if choose.phase == 0 %}
+              <a href="#" class="btn btn-warning btn-xs">{{ _("Waiting") }}</a>
+            {% elif choose.phase == 1 %}
+              <a href="#" class="btn btn-success btn-xs">{{ _("Approved") }}</a>
+            {% elif choose.phase == 2 %}
+              <a disabled="disabled" href="#" class="btn btn-danger btn-xs">{{ _("Denied") }}</a>
+            {% endif %}
+          <td class="width-10perc">
+            {% if choose.cancelable %}
+            <a href="#" onclick="javascript:delete_choose({{ choose.id }})" class="btn btn-danger btn-xs">{{ _("Cancel") }}</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+    {% else %}
+      {{ _("You haven't choosed anything in this category.") }}
+    {% endif %}
+  <br/>
+  <br/>
+  {% endfor %}
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+
+  function delete_choose(choose_id) {
+
+    $.ajax({
+        url: '/api/choose/'+choose_id,
+        type: 'DELETE',
+        success: function() { location.reload(); },
+        error: function(jqXHR, textStatus, errorThrown) { console.log(jqXHR); console.log(textStatus); console.log(errorThrown); }
+    });
+
+  }
+
+</script>
+{% endblock %}
