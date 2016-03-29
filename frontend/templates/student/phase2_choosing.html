@@ -62,11 +62,11 @@
           color: red;
         {% endif %}
       ">
-        <small>Zapísaných: {{ group.chooses_count }}</small><br/>
+        <small>{{ _("Choosed") }}: {{ group.chooses_count }}</small><br/>
         {% if group.choosing.courses_min == group.choosing.courses_max %}
-          <small>Požadovaných: {{ group.choosing.courses_max }}</small>
+          <small>{{ _("Required") }}: {{ group.choosing.courses_max }}</small>
         {% else %}
-          <small>Minimum: {{ group.choosing.courses_min }}, maximum: {{ group.choosing.courses_max }}</small>
+          <small>{{ _("Minimum") }}: {{ group.choosing.courses_min }}, {{ _("maximum") }}: {{ group.choosing.courses_max }}</small>
         {% endif %}
       </div>
     </span>
