@@ -4,6 +4,8 @@
 Practical core of application - configuration and student's choices.
 """
 
+from datetime import datetime
+
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
@@ -12,15 +14,27 @@ from django.utils.translation import ugettext as _
 from app.accounts.models import Student, Teacher
 from app.courses.models import Course, CourseCategory
 
+# also import in Choose.clean function:
+#   from app.choosing.helpers import get_student_choosings
+
+
+class ChoosingPhase:
+    PREPARING_0 = 0
+    COURSES_CHOOSING_1 = 1
+    CHOOSES_EVALUATING_2 = 2
+    CHOOSES_CHANING_3 = 3
+    GROUPS_CREATING_4 = 4
+    GROUPS_CHANGES_5 = 5
+    FINISHED_6 = 6
 
 CHOOSING_PHASE = (
-    (0, _("Preparation")),
-    (1, _("Choosing of courses")),
-    (2, _("Evaluating of options")),
-    (3, _("Changes in choosings")),
-    (4, _("Creating groups")),
-    (5, _("Group changes")),
-    (6, _("Finished"))
+    (ChoosingPhase.PREPARING_0,           _("Preparation")),
+    (ChoosingPhase.COURSES_CHOOSING_1,    _("Choosing of courses")),
+    (ChoosingPhase.CHOOSES_EVALUATING_2,  _("Evaluating of options")),
+    (ChoosingPhase.CHOOSES_CHANING_3,     _("Changes in choosings")),
+    (ChoosingPhase.GROUPS_CREATING_4,     _("Creating groups")),
+    (ChoosingPhase.GROUPS_CHANGES_5,      _("Group changes")),
+    (ChoosingPhase.FINISHED_6,            _("Finished"))
 )
 
 
@@ -78,6 +92,19 @@ class Choosing(models.Model):
 
         return courses
 
+    @staticmethod
+    def get_active_for_grade(grade):
+        l = list()
+
+        all_active = Choosing.objects.filter(active=True, for_grade=grade,
+            time_start__lte=datetime.now(), time_end__gte=datetime.now()
+        ).all()
+
+        for c in all_active:
+            l.append(c)
+
+        return l
+
 
 CHOOSE_PHASE = (
     (0, _("Waiting")),
@@ -95,6 +122,7 @@ class Choose(models.Model):
     class Meta:
         verbose_name = _("Student's choose")
         verbose_name_plural = _("Students' chooses")
+        unique_together = ('student', 'choosing', 'course')
 
     student = models.ForeignKey(to=Student)
     choosing = models.ForeignKey(to=Choosing)
@@ -103,8 +131,22 @@ class Choose(models.Model):
     phase = models.IntegerField(choices=CHOOSE_PHASE, default=0)
 
     def clean(self):
+        from app.choosing.helpers import get_student_choosings
+
+        student_choosing_set = get_student_choosings(self.student)
+        if self.choosing not in student_choosing_set:
+            raise ValidationError(_('Student cannot choose in this choosing.'))
+
         if self.course not in self.choosing.course_category.course_set.all():
             raise ValidationError(_('Course does not belong to the choosing course category.'))
+
+        others_count = Choose.objects.filter(student=self.student, choosing=self.choosing, phase__lt=2).count()
+        if self.id:
+            others_count -= 1
+
+        if others_count >= self.choosing.courses_max:
+            raise ValidationError(_('Student reached maximum limit of choosed courses.'))
+
         if self.phase == 3:
             return
         if self.choosing.phase in (0, 1):
@@ -130,6 +172,9 @@ class Choose(models.Model):
         if self.choosing.phase in (0,2,4,6):
             return False
         return True if self.phase == 0 else False
+
+    def is_owner(self, user):
+        return user.student and self.student == user.student
 
     def accept(self):
         self.phase = 1
