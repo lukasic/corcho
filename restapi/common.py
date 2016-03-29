@@ -2,6 +2,7 @@
 
 from rest_framework.permissions import BasePermission
 from rest_framework import serializers, permissions, exceptions
+from rest_framework.authentication import SessionAuthentication
 
 class ModelSerializerWithModelValidation(serializers.ModelSerializer):
 
@@ -16,3 +17,7 @@ class IsStudentUser(BasePermission):
         return request.user and hasattr(request.user, 'student')
 
 
+# temporary disable csrf hack
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+    def enforce_csrf(self, request):
+        return

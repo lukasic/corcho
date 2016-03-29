@@ -144,6 +144,7 @@ SYSTEM_VERSION = "150321b1"
 #
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'restapi.common.CsrfExemptSessionAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
