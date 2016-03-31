@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import datetime
+
 from django.utils.translation import ugettext as _
 
 from rest_framework import serializers, viewsets, exceptions
 
 from app.accounts.models import Student
 from app.accounts.helpers import is_student
-from app.choosing.models import Choose, Choosing
+from app.choosing.models import Choose, Choosing, TeacherRequest
 from app.choosing.helpers import get_student_choosings
 from app.courses.models import Course
 
@@ -71,8 +73,44 @@ class ChooseViewset(viewsets.ModelViewSet):
         return obj
 
 
+class TeacherRequestSerializer(serializers.Serializer):
+    teacher_id = serializers.IntegerField()
+    choose_id = serializers.IntegerField()
+
+    class Meta:
+        model = TeacherRequest
+        fields = ("choose", "teacher")
+
+    def create(self, validated_data):
+        req = TeacherRequest.objects.filter(choose_id=validated_data.get("choose_id"))
+        if req:
+            req = req[0]
+            teacher_id = validated_data.get("teacher_id")
+
+            if req.phase == 1:
+                raise Exception(_("Cannot change."))
+
+            if req.phase == 2 and req.teacher_id != teacher_id:
+                return TeacherRequest.objects.create(**validated_data)
+
+            req.teacher_id = teacher_id
+            req.time = datetime.datetime.now()
+            req.save()
+
+        else:
+            req = TeacherRequest.objects.create(**validated_data)
+
+        return req
+
+
+class TeacherRequestViewSet(viewsets.ModelViewSet):
+    queryset = TeacherRequest.objects.all()
+    serializer_class = TeacherRequestSerializer
+
+
 views_to_register = (
     (r'choose', ChooseViewset),
+    (r'teacher-request', TeacherRequestViewSet),
 )
 
 

@@ -17,11 +17,11 @@ class ChoosingAdminForm(forms.ModelForm):
 
 
 class ChoosingAdmin(admin.ModelAdmin):
-    list_display = ("acronym", "name", "course_category", "phase", "time_start", "time_end", "active", "priority")
+    list_display = ("acronym", "name", "course_category", "phase", "time_start", "time_end", "active", "priority", "allow_teacher_requests")
     list_filter = ("course_category", "phase", "active")
     fieldsets = (
         ( '', { 'fields': ('acronym', 'name', 'course_category') }, ),
-        ( _('Control'), { 'fields': ('time_start', 'time_end', 'active', 'priority', 'phase', 'for_grade', 'courses_min', 'courses_max') } ),
+        ( _('Control'), { 'fields': ('time_start', 'time_end', 'active', 'priority', 'phase', 'for_grade', 'courses_min', 'courses_max', "allow_teacher_requests") } ),
         ( _('Phase: Changes in choosings'), { 'fields': ('denied_courses',) })
     )
     filter_horizontal = ["denied_courses",]

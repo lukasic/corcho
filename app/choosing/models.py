@@ -205,7 +205,6 @@ class TeacherRequest(models.Model):
     """
 
     class Meta:
-        unique_together = ("choose", "teacher")
         verbose_name = _("Request for teacher")
         verbose_name_plural = _("Requests for teachers")
 

@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ _("Request for teacher") }}{% endblock %}
+{% block content_title %}{{ _("Request for teacher") }}{% endblock %}
+
+{% block content %}
+{% if groups  %}
+<div>
+    <div>
+        <h3>{{ _("New request") }}</h3>
+        <div class="row">
+            <div class="col-sm-3" style="min-width: 230px; max-width: 250px; margin-bottom: 5px;">
+                <select id="selectCourse" class="selectpicker" name="course" onchange="courseSelected(this)">
+                    <option value="">---</option>
+                    {% for group in groups %}
+                        <optgroup label="{{ group.choosing.name }}"/>
+                        {% for choose in group.chooses %}
+                            {% if choose.phase != 2 %}
+                                {% if choose.course not in group.choosing.denied_courses.all %}
+                                    <option value="{{ choose.id }},{{ choose.course.id }}">{{ choose.course.name }}</option>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-sm-3" style="min-width: 230px; max-width: 250px; margin-bottom: 5px;">
+                <select id="selectTeacher" name="teacher" class="selectpicker">
+                    <option value="">---</option>
+                </select>
+            </div>
+            <div class="col-sm-1" style="min-width: 30px; margin-bottom: 5px;">
+                <button class="btn btn-primary disabled" onclick="requestTeacher()" id="selectButton">{{ _("Save") }}</button>
+            </div>
+            <div class="cols-sm-5"></div>
+        </div>
+    </div>
+    <hr/>
+    {% for group in groups %}
+	<h3 class="sub-header">{{ group.choosing.name }}</h3>
+    {% if group.requests.count > 0 %}
+	<div class="table-responsive">
+		<table class="table table-striped" style="border: 1px solid #ddd;">
+			<thead>
+				<tr>
+				<th>{{ _("Name") }}</th>
+				<th class="width-30perc">{{ _("Teacher") }}</th>
+				<th class="width-20perc">{{ _("Last change") }}</th>
+				<th class="width-10perc">{{ _("State") }}</th>
+				<th class="width-10perc">{{ _("Action") }}</th>
+				</tr>
+			</thead>
+			<tbody>
+                {% for request in group.requests %}
+				<tr>
+                    {% if request.phase == 2 or request.choose.course in group.denied_courses %}
+                        <td><a href="#" style="color: grey; text-decoration: line-through;">{{ request.choose.course.name }}</a></td>
+                        <td><a href="#" style="color: grey; text-decoration: line-through;" class="width-30perc">{{ request.teacher }}</a></td>
+                        <td><a href="#" style="color: grey; text-decoration: line-through;" class="width-20perc">{{ request.created_at }}</a></td>
+                    {% else %}
+                        <td><a href="#">{{ request.choose.course.name }}</a></td>
+                        <td class="width-30perc">{{ request.teacher }}</td>
+                        <td class="width-20perc">{{ request.created_at }}</td>
+                    {% endif %}
+
+					<td class="width-10perc">
+                        {% if request.phase == 0 %}
+                            <a href="#" class="btn btn-warning btn-xs">{{ _("Waiting") }}</a>
+                        {% elif request.phase == 1 %}
+                            <a href="#" class="btn btn-success btn-xs">{{ _("Approved") }}</a>
+                        {% elif request.phase == 2 %}
+                            <a disabled="disabled" href="#" class="btn btn-danger btn-xs">{{ _("Denied") }}</a>
+                        {% endif %}
+                    </td>
+					<td>
+                        {% if request.cancelable %}
+                        <a href="#" onclick="deleteTeacherReq(this, {{ request.id }})" class="btn btn-primary btn-xs">{{ _("Cancel") }}</a>
+                        {% endif %}
+                    </td>
+				</tr>
+                {% endfor %}
+			</tbody>
+		</table>
+	</div>
+        {% else %}
+            {{ _("You haven't requested for teacher in this category yet.") }}
+        {% endif %}
+    <br/>
+    <br/>
+    {% endfor %}
+</div>
+{% else %}
+<div>{{ _("This option is not available for you right now.") }}</div>
+{% endif %}
+{% endblock %}
+
+{% if groups  %}
+{% block page_scripts %}
+<script>
+
+function getSelectedCourse()
+{
+    var ids = $("select#selectCourse").val();
+    var course_id = -1;
+    if ( ids.indexOf(",") > -1 )
+    {
+        ids = ids.split(",");
+        course_id = ids["1"];
+    }
+    return course_id;
+}
+
+function getSelectedChoose()
+{
+    var ids = $("select#selectCourse").val();
+    var choose_id = -1;
+    if ( ids.indexOf(",") > -1 )
+    {
+        ids = ids.split(",");
+        choose_id = ids["0"];
+    }
+    return choose_id;
+}
+
+function getSelectedTeacher()
+{
+    return $("#selectTeacher").val();
+}
+
+
+function courseSelected(elem)
+{
+    var choose_id = getSelectedChoose();
+    var course_id = getSelectedCourse();
+
+    var selectTeacher = $("select#selectTeacher");
+    selectTeacher.html("");
+
+    $.getJSON("/api/course-teachers/"+course_id+"/?format=json",
+        function(result)
+        {
+            var html = selectTeacher.html();
+
+            $.each(result['teachers'], function(i, field){
+                html = html + "<option value="+field.id+">"+field.name+"</option>";
+            });
+
+            selectTeacher.html(html);
+        }
+    ).always(
+        function()
+        {
+            if ( selectTeacher.html() == "" )
+            {
+                selectTeacher.html("<option value=''>---</option>");
+                $('#selectButton').addClass("disabled");
+            }
+            else
+            {
+                $('#selectButton').removeClass("disabled");
+            }
+
+            $('.selectpicker').selectpicker('render');
+            $('.selectpicker').selectpicker('refresh');
+        }
+    );
+}
+
+function requestTeacher()
+{
+    var choose_id = getSelectedChoose();
+    var course_id = getSelectedCourse();
+    var teacher_id = getSelectedTeacher();
+
+    var jsonData = {
+        'choose_id': choose_id,
+        'teacher_id': teacher_id
+    };
+
+    $.ajax(
+    {
+        url: '/api/teacher-request/',
+        type: 'POST',
+        cache: false,
+        data: jsonData,
+
+        success: function(data,status,xhr)
+        {
+            location.reload();
+        },
+
+        error: function(data,status,xhr) {
+            alert('{{ _("Bad error happend. Please, try it later. If problem persists, report it.") }}');
+            location.reload();
+        }
+    });
+}
+
+function deleteTeacherReq(element, req_id)
+{
+    $.ajax(
+    {
+        url: '/api/teacher-request/' + req_id,
+        type: 'DELETE',
+        cache: false,
+
+        success: function(data,status,xhr)
+        {
+            var count = $(element).parent().parent().parent().find("tr").length;
+            if ( count < 2 )
+            {
+                location.reload();
+            }
+            else
+            {
+                $(element).parent().parent().remove();
+            }
+        },
+
+        error: function(data,status,xhr)
+        {
+            alert('{{ _("Bad error happend. Please, try it later. If problem persists, report it.") }}');
+        }
+    });
+}
+</script>
+{% endblock %}
+{% endif %}

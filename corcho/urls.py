@@ -19,4 +19,5 @@ urlpatterns = [
     url(r'^courses/?$', frontend_views.courses),
     url(r'^student/choosing/?$', frontend_views_student.phase2_choosing),
     url(r'^student/courses/?$', frontend_views_student.my_courses),
+    url(r'^student/teachers-requests/?$', frontend_views_student.teachers_requests),
 ]

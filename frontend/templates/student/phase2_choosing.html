@@ -8,7 +8,6 @@
 <div>
     {% for group in groups %}
   <h3 class="sub-header">{{ group.choosing.name }}</h3>
-  <hr/>
     {% if group.course_set.count %}
   <div class="table-responsive">
     <table class="table table-striped" style="border: 1px solid #ddd;">
@@ -22,7 +21,7 @@
       <tbody>
         {% for row in group.rows %}
         <tr>
-          {% if row.course in group.denied_courses %}
+          {% if row.course in group.denied_courses or row.choose and row.choose.phase == 2 %}
           <td><a href="#" style="color: grey; text-decoration: line-through;">{{ row.course.name }}</a></td>
           {% else %}
           <td><a href="#">{{ row.course.name }}</a></td>
@@ -46,7 +45,7 @@
                 {% elif row.choose.phase == 1 %}
                   <a href="#" class="btn btn-success btn-xs">{{ _("Approved") }}</a>
                 {% elif row.choose.phase == 2 %}
-                  <a href="#" class="btn btn-danger btn-xs">{{ _("Denied") }}</a>
+                  <a disabled="disabled" href="#" class="btn btn-danger btn-xs">{{ _("Denied") }}</a>
                 {% endif %}
             </td>
         </tr>

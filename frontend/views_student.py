@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 
 from app.accounts.helpers import is_student
 from app.courses.models import Course, CourseCategory
-from app.choosing.models import Choosing, Choose, ChoosingPhase
+from app.choosing.models import Choosing, Choose, ChoosingPhase, TeacherRequest
 from app.choosing.helpers import get_student_choosings
 
 
@@ -68,3 +68,24 @@ def my_courses(request):
     }
 
     return render(request, 'student/my_courses.html', context)
+
+
+@login_required
+@user_passes_test(is_student)
+def teachers_requests(request):
+    confs = get_student_choosings(request.user.student)
+    groups = []
+
+    for choosing in confs:
+        if not choosing.allow_teacher_requests:
+            continue
+        chooses = Choose.objects.filter(choosing=choosing, student__user=request.user)
+        reqs = TeacherRequest.objects.filter(choose__in=chooses).all()
+        groups.append({'choosing':choosing, 'chooses':chooses, 'requests':reqs, 'denied_courses': choosing.denied_courses.all()})
+
+    context = {
+        'groups': groups,
+    }
+
+    return render(request, "student/teachers_requests.html", context)
+
