@@ -15,7 +15,7 @@ urlpatterns = [
     url(r'^api/', include(restapi_router.urls, namespace='api')),
     url(r'^logout/?$', auth_views.logout, {'next_page': '/login'}),
     url(r'^login/?$', auth_views.login, {'template_name': 'login.html', }),
-    url(r'^dashboard/?$', frontend_views.dashboard),
+    url(r'^$', frontend_views.dashboard),
     url(r'^courses/?$', frontend_views.courses),
     url(r'^student/choosing/?$', frontend_views_student.phase2_choosing),
     url(r'^student/courses/?$', frontend_views_student.my_courses),

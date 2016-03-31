@@ -122,7 +122,7 @@ STATIC_URL = '/static/'
 #
 
 LOGIN_URL = '/login'
-LOGIN_REDIRECT_URL = '/dashboard'
+LOGIN_REDIRECT_URL = '/'
 
 #
 # Instance
