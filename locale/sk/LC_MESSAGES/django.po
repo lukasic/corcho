@@ -1,0 +1,353 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-03-31 12:09+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: app/accounts/models.py:32 frontend/templates/sidebar.html.py:9
+msgid "Student"
+msgstr "Študent"
+
+#: app/accounts/models.py:33
+msgid "Students"
+msgstr "Študenti"
+
+#: app/accounts/models.py:52 frontend/templates/sidebar.html.py:19
+#: frontend/templates/student/teachers_requests.html:48
+msgid "Teacher"
+msgstr "Učiteľ"
+
+#: app/accounts/models.py:53 frontend/templates/pages/courses.html.py:25
+msgid "Teachers"
+msgstr "Učitelia"
+
+#: app/accounts/models.py:62
+msgid "subjects"
+msgstr "predmety"
+
+#: app/accounts/models.py:66
+msgid "courses"
+msgstr "predmety/semináre"
+
+#: app/accounts/models.py:76
+msgid "name"
+msgstr "názov"
+
+#: app/choosing/admin.py:24
+msgid "Control"
+msgstr "Ovládanie"
+
+#: app/choosing/admin.py:25
+msgid "Phase: Changes in choosings"
+msgstr "Fáza: Zmeny v zápisoch"
+
+#: app/choosing/models.py:31
+msgid "Preparation"
+msgstr "Príprava"
+
+#: app/choosing/models.py:32
+msgid "Choosing of courses"
+msgstr "Zápis predmetov/seminárov"
+
+#: app/choosing/models.py:33
+msgid "Evaluating of options"
+msgstr "Vyhodnotenie možností"
+
+#: app/choosing/models.py:34
+msgid "Changes in choosings"
+msgstr "Zmeny v zápisoch"
+
+#: app/choosing/models.py:35
+msgid "Creating groups"
+msgstr "Vytváranie skupín"
+
+#: app/choosing/models.py:36
+msgid "Group changes"
+msgstr "Zmeny v skupinách"
+
+#: app/choosing/models.py:37
+msgid "Finished"
+msgstr "Ukončené"
+
+#: app/choosing/models.py:49
+msgid "Choosing configuration"
+msgstr "Nastavenia pre zápis"
+
+#: app/choosing/models.py:50
+msgid "Choosing configurations"
+msgstr "Nastavenia pre zápisy"
+
+#: app/choosing/models.py:110 app/choosing/models.py:195
+#: frontend/templates/student/my_courses.html:35
+#: frontend/templates/student/teachers_requests.html:69
+#: restapi/api_choosing.py:22
+msgid "Waiting"
+msgstr "Čaká sa"
+
+#: app/choosing/models.py:111 app/choosing/models.py:196
+#: frontend/templates/student/my_courses.html:37
+#: frontend/templates/student/phase2_choosing.html:46
+#: frontend/templates/student/teachers_requests.html:71
+msgid "Approved"
+msgstr "Schválené"
+
+#: app/choosing/models.py:112 app/choosing/models.py:197
+#: frontend/templates/student/my_courses.html:39
+#: frontend/templates/student/phase2_choosing.html:48
+#: frontend/templates/student/teachers_requests.html:73
+msgid "Denied"
+msgstr "Odmietnuté"
+
+#: app/choosing/models.py:113
+msgid "Deleted"
+msgstr "Zmazané"
+
+#: app/choosing/models.py:123
+msgid "Student's choose"
+msgstr "Študentov zápis"
+
+#: app/choosing/models.py:124
+msgid "Students' chooses"
+msgstr "Zápisy študentov"
+
+#: app/choosing/models.py:138
+msgid "Student cannot choose in this choosing."
+msgstr "Študent nemôže zapisovať z danej kategórie"
+
+#: app/choosing/models.py:141
+msgid "Course does not belong to the choosing course category."
+msgstr "Kurz nepatrí do kategórie, v rámci ktorej zapisujeme"
+
+#: app/choosing/models.py:148
+msgid "Student reached maximum limit of choosed courses."
+msgstr "Študent dosiahol horný limit zapísaných kurzov"
+
+#: app/choosing/models.py:157
+msgid "Could not choose denied course."
+msgstr "Nie je možné zapísať zrušený kurz"
+
+#: app/choosing/models.py:208
+#: frontend/templates/student/teachers_requests.html:4
+#: frontend/templates/student/teachers_requests.html:5
+msgid "Request for teacher"
+msgstr "Žiadosť o učiteľa"
+
+#: app/choosing/models.py:209
+msgid "Requests for teachers"
+msgstr "Žiadosti o učiteľov"
+
+#: app/courses/models.py:17
+msgid "Course category"
+msgstr "Kategória kurzov"
+
+#: app/courses/models.py:18
+msgid "Course categories"
+msgstr "Kategórie kurzov"
+
+#: app/courses/models.py:35
+msgid "Subject class"
+msgstr "Trieda predmetov"
+
+#: app/courses/models.py:36
+msgid "Subject classes"
+msgstr "Triedy predmetov"
+
+#: app/courses/models.py:61
+msgid "Course"
+msgstr "Predmet/Seminár"
+
+#: app/courses/models.py:62 frontend/templates/pages/courses.html.py:4
+msgid "Courses"
+msgstr "Predmety/Semináre"
+
+#: frontend/templates/base-navigation.html:17
+msgid "Logout"
+msgstr "Odhlásiť"
+
+#: frontend/templates/login.html:29
+msgid "Log in"
+msgstr "Prihlásiť"
+
+#: frontend/templates/login.html:36
+msgid "Username"
+msgstr "Login"
+
+#: frontend/templates/login.html:42
+msgid "Password"
+msgstr "Heslo"
+
+#: frontend/templates/login.html:49
+msgid "Login"
+msgstr "Login"
+
+#: frontend/templates/pages/courses.html:5
+msgid "Information about courses"
+msgstr "Informácie o predmetoch/seminároch"
+
+#: frontend/templates/pages/courses.html:14
+msgid "Search"
+msgstr "Hľadať"
+
+#: frontend/templates/pages/courses.html:20
+msgid "Category"
+msgstr "Kategória"
+
+#: frontend/templates/pages/courses.html:21
+msgid "Goal"
+msgstr "Cieľ"
+
+#: frontend/templates/pages/courses.html:22
+msgid "Content"
+msgstr "Obsah"
+
+#: frontend/templates/pages/courses.html:23
+msgid "Annotations"
+msgstr "Anotácie"
+
+#: frontend/templates/pages/courses.html:30
+msgid "No courses."
+msgstr "Žiadne predmety/semináre."
+
+#: frontend/templates/sidebar.html:4
+msgid "Dashboard"
+msgstr "Úvod"
+
+#: frontend/templates/sidebar.html:10
+msgid "All courses"
+msgstr "Všetky kurzy"
+
+#: frontend/templates/sidebar.html:11
+msgid "Couses choosing"
+msgstr "Zápis predmetov/seminárov"
+
+#: frontend/templates/sidebar.html:12
+#: frontend/templates/student/my_courses.html:4
+#: frontend/templates/student/my_courses.html:5
+msgid "My courses"
+msgstr "Moje zápisy"
+
+#: frontend/templates/sidebar.html:13
+msgid "Teachers requests"
+msgstr "Žiadosti o učiteľov"
+
+#: frontend/templates/sidebar.html:20
+msgid "Course editation"
+msgstr "Editácia kurzu"
+
+#: frontend/templates/sidebar.html:26
+msgid "Administrator"
+msgstr "Správca"
+
+#: frontend/templates/sidebar.html:27
+msgid "Administration"
+msgstr "Správa"
+
+#: frontend/templates/student/my_courses.html:16
+#: frontend/templates/student/phase2_choosing.html:16
+#: frontend/templates/student/teachers_requests.html:47
+msgid "Name"
+msgstr "Názov"
+
+#: frontend/templates/student/my_courses.html:17
+msgid "Time"
+msgstr "Čas"
+
+#: frontend/templates/student/my_courses.html:18
+#: frontend/templates/student/phase2_choosing.html:18
+#: frontend/templates/student/teachers_requests.html:50
+msgid "State"
+msgstr "Stav"
+
+#: frontend/templates/student/my_courses.html:19
+#: frontend/templates/student/phase2_choosing.html:17
+#: frontend/templates/student/teachers_requests.html:51
+msgid "Action"
+msgstr "Akcia"
+
+#: frontend/templates/student/my_courses.html:43
+#: frontend/templates/student/phase2_choosing.html:33
+#: frontend/templates/student/teachers_requests.html:78
+msgid "Cancel"
+msgstr "Zrušiť"
+
+#: frontend/templates/student/my_courses.html:52
+msgid "You haven't choosed anything in this category."
+msgstr "Nemáte nič zapísané z tejto kategórie"
+
+#: frontend/templates/student/phase2_choosing.html:4
+#: frontend/templates/student/phase2_choosing.html:5
+msgid "Courses choosing"
+msgstr "Zápis predmetov/seminárov"
+
+#: frontend/templates/student/phase2_choosing.html:37
+msgid "Choose"
+msgstr "Zapísať"
+
+#: frontend/templates/student/phase2_choosing.html:39
+msgid "Reached limit"
+msgstr "Dosiahnutý limit"
+
+#: frontend/templates/student/phase2_choosing.html:44
+#: frontend/templates/student/phase2_choosing.html:64
+msgid "Choosed"
+msgstr "Zapísané"
+
+#: frontend/templates/student/phase2_choosing.html:66
+msgid "Required"
+msgstr "Požadované"
+
+#: frontend/templates/student/phase2_choosing.html:68
+msgid "Minimum"
+msgstr "Minimum"
+
+#: frontend/templates/student/phase2_choosing.html:68
+msgid "maximum"
+msgstr "maximum"
+
+#: frontend/templates/student/phase2_choosing.html:73
+msgid "No courses in this category"
+msgstr "Žiadne predmety/semináre v tejto kategórii"
+
+#: frontend/templates/student/teachers_requests.html:11
+msgid "New request"
+msgstr "Nová žiadosť"
+
+#: frontend/templates/student/teachers_requests.html:34
+msgid "Save"
+msgstr "Uložiť"
+
+#: frontend/templates/student/teachers_requests.html:49
+msgid "Last change"
+msgstr "Posledná zmena"
+
+#: frontend/templates/student/teachers_requests.html:87
+msgid "You haven't requested for teacher in this category yet."
+msgstr "Nemáte žiadne žiadosti o učiteľa z tejto kategórie"
+
+#: frontend/templates/student/teachers_requests.html:94
+msgid "This option is not available for you right now."
+msgstr "Táto možnosť nie je práve teraz dostupná"
+
+#: frontend/templates/student/teachers_requests.html:194
+#: frontend/templates/student/teachers_requests.html:223
+msgid ""
+"Nastala chyba. Prosím, skúste to neskôr. Ak problém pretrváva, ohláste ho."
+msgstr ""
+
+#: restapi/api_choosing.py:91
+msgid "Cannot change."
+msgstr "Nie je možné zmeniť zápis."
