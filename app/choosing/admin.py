@@ -42,7 +42,7 @@ class ChooseAdmin(admin.ModelAdmin):
 class TeacherRequestAdmin(admin.ModelAdmin):
     list_display = ("choose", "teacher", "phase", "created_at")
     list_filter = ("choose__choosing", "teacher", "phase")
-    search_fields = ("choose__student", "choose__course", "teacher__user__username")
+    search_fields = ("choose__student__user__username", "choose__course__name", "teacher__user__username")
 
 
 admin.site.register(Choosing, ChoosingAdmin)
