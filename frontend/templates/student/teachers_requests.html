@@ -55,27 +55,27 @@
                 {% for request in group.requests %}
 				<tr>
                     {% if request.phase == 2 or request.choose.course in group.denied_courses %}
-                        <td><a href="#" style="color: grey; text-decoration: line-through;">{{ request.choose.course.name }}</a></td>
-                        <td><a href="#" style="color: grey; text-decoration: line-through;" class="width-30perc">{{ request.teacher }}</a></td>
-                        <td><a href="#" style="color: grey; text-decoration: line-through;" class="width-20perc">{{ request.created_at }}</a></td>
+                        <td><a style="color: grey; text-decoration: line-through;">{{ request.choose.course.name }}</a></td>
+                        <td><a style="color: grey; text-decoration: line-through;" class="width-30perc">{{ request.teacher }}</a></td>
+                        <td><a style="color: grey; text-decoration: line-through;" class="width-20perc">{{ request.created_at }}</a></td>
                     {% else %}
-                        <td><a href="#">{{ request.choose.course.name }}</a></td>
+                        <td><a>{{ request.choose.course.name }}</a></td>
                         <td class="width-30perc">{{ request.teacher }}</td>
                         <td class="width-20perc">{{ request.created_at }}</td>
                     {% endif %}
 
 					<td class="width-10perc">
                         {% if request.phase == 0 %}
-                            <a href="#" class="btn btn-warning btn-xs">{{ _("Waiting") }}</a>
+                            <a class="btn btn-warning btn-xs">{{ _("Waiting") }}</a>
                         {% elif request.phase == 1 %}
-                            <a href="#" class="btn btn-success btn-xs">{{ _("Approved") }}</a>
+                            <a class="btn btn-success btn-xs">{{ _("Approved") }}</a>
                         {% elif request.phase == 2 %}
-                            <a disabled="disabled" href="#" class="btn btn-danger btn-xs">{{ _("Denied") }}</a>
+                            <a disabled="disabled" class="btn btn-danger btn-xs">{{ _("Denied") }}</a>
                         {% endif %}
                     </td>
 					<td>
                         {% if request.cancelable %}
-                        <a href="#" onclick="deleteTeacherReq(this, {{ request.id }})" class="btn btn-primary btn-xs">{{ _("Cancel") }}</a>
+                        <a onclick="deleteTeacherReq(this, {{ request.id }})" class="btn btn-primary btn-xs">{{ _("Cancel") }}</a>
                         {% endif %}
                     </td>
 				</tr>

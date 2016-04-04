@@ -23,24 +23,24 @@
         {% for choose in row.chooses %}
         <tr>
           {% if choose.phase == 2 %}
-            <td><a href="#" style="color: grey; text-decoration: line-through;">{{ choose.course.name }}</a></td>
-            <td><a href="#" style="color: grey; text-decoration: line-through;">{{ choose.created_at }}</a></td>
+            <td><a style="color: grey; text-decoration: line-through;">{{ choose.course.name }}</a></td>
+            <td><a style="color: grey; text-decoration: line-through;">{{ choose.created_at }}</a></td>
           {% else %}
-            <td><a href="#">{{ choose.course.name }}</a></td>
+            <td><a>{{ choose.course.name }}</a></td>
             <td class="width-20perc">{{ choose.created_at }}</td>
           {% endif %}
 
           <td class="width-10perc">
             {% if choose.phase == 0 %}
-              <a href="#" class="btn btn-warning btn-xs">{{ _("Waiting") }}</a>
+              <a class="btn btn-warning btn-xs">{{ _("Waiting") }}</a>
             {% elif choose.phase == 1 %}
-              <a href="#" class="btn btn-success btn-xs">{{ _("Approved") }}</a>
+              <a class="btn btn-success btn-xs">{{ _("Approved") }}</a>
             {% elif choose.phase == 2 %}
-              <a disabled="disabled" href="#" class="btn btn-danger btn-xs">{{ _("Denied") }}</a>
+              <a disabled="disabled" class="btn btn-danger btn-xs">{{ _("Denied") }}</a>
             {% endif %}
           <td class="width-10perc">
             {% if choose.cancelable %}
-            <a href="#" onclick="javascript:delete_choose({{ choose.id }})" class="btn btn-danger btn-xs">{{ _("Cancel") }}</a>
+            <a onclick="javascript:delete_choose({{ choose.id }})" class="btn btn-danger btn-xs">{{ _("Cancel") }}</a>
             {% endif %}
           </td>
         </tr>

@@ -22,30 +22,30 @@
         {% for row in group.rows %}
         <tr>
           {% if row.course in group.denied_courses or row.choose and row.choose.phase == 2 %}
-          <td><a href="#" style="color: grey; text-decoration: line-through;">{{ row.course.name }}</a></td>
+          <td><a style="color: grey; text-decoration: line-through;">{{ row.course.name }}</a></td>
           {% else %}
-          <td><a href="#">{{ row.course.name }}</a></td>
+          <td><a>{{ row.course.name }}</a></td>
           {% endif %}
           <td class="width-10perc">
               {% if row.course in group.denied_courses %}
               {% elif row.course.id in group.chooses.keys %}
                 {% if row.choose.phase == 0 %}
-                  <a href="#" onclick="delete_choose({{ row.choose.id }})" class="btn btn-danger btn-xs">{{ _("Cancel") }}</a>
+                  <a onclick="delete_choose({{ row.choose.id }})" class="btn btn-danger btn-xs">{{ _("Cancel") }}</a>
                 {% endif %}
               {% elif group.choosing.courses_max > group.chooses_count %}
-                  <a href="#" onclick="javascript:choose_course({{ group.choosing.id }}, {{ row.course.id }});"
+                  <a onclick="javascript:choose_course({{ group.choosing.id }}, {{ row.course.id }});"
                     class="btn btn-primary btn-xs">{{ _("Choose") }}</a>
               {% else %}
-                    <a href="#" class="btn btn-info btn-xs">{{ _("Reached limit") }}</a>
+                    <a class="btn btn-info btn-xs">{{ _("Reached limit") }}</a>
               {% endif %}
             </td>
             <td class="width-10perc">
                 {% if row.choose.phase == 0 %}
-                  <a href="#" class="btn btn-warning btn-xs">{{ _("Choosed") }}</a>
+                  <a class="btn btn-warning btn-xs">{{ _("Choosed") }}</a>
                 {% elif row.choose.phase == 1 %}
-                  <a href="#" class="btn btn-success btn-xs">{{ _("Approved") }}</a>
+                  <a class="btn btn-success btn-xs">{{ _("Approved") }}</a>
                 {% elif row.choose.phase == 2 %}
-                  <a disabled="disabled" href="#" class="btn btn-danger btn-xs">{{ _("Denied") }}</a>
+                  <a disabled="disabled" class="btn btn-danger btn-xs">{{ _("Denied") }}</a>
                 {% endif %}
             </td>
         </tr>
