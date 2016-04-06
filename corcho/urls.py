@@ -20,4 +20,6 @@ urlpatterns = [
     url(r'^student/choosing/?$', frontend_views_student.phase2_choosing),
     url(r'^student/courses/?$', frontend_views_student.my_courses),
     url(r'^student/teachers-requests/?$', frontend_views_student.teachers_requests),
+    url(r'^root/overview/?$', frontend_views.overview),
+    url(r'^root/overview/(\d+)$', frontend_views.overview),
 ]

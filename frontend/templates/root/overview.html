@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{_("Overview")}}{% endblock %}
+{% block content_title %}{{_("Overview")}}{% endblock %}
+
+{% block content %}
+
+    <select id="selectChoosing" onchange="select_choosing()" class="selectpicker">
+        <option value="">---</option>
+        {% for choosing in choosing_list %}
+        <option {% if cur_choosing.id == choosing.id %}selected=selected{% endif %} value="{{ choosing.id }}">{{ choosing.name }}</option>
+        {% endfor %}
+    </select>
+
+    {% if cur_choosing %}
+    <br/>
+    <br/>
+    <a href="{{ base_url }}/admin/choosing/choosing/{{ cur_choosing.id }}/">Nastavenia</a>
+    <hr/>
+
+
+    {% if cur_choosing.phase == 1 or cur_choosing.phase == 3 %}
+    <h3>Zápisy predmetov</h3>
+    <div class="row">
+        <div class="col-lg-12 col-sm-12 col-12">
+            <div class="row">
+                <div class="col-lg-6 col-sm-6 col-6">
+                    <b>Stav kurzov:</b>
+                    <ul>
+                        {% for course in cur_choosing.resolve_courses %}
+                        {% if course.choose_set.all|length > 11 %}
+                        <li style="color: green;">{{ course.name }} ({{ course.choose_set.all|length }})</li>
+                        {% else %}
+                        <li style="color: red;">{{ course.name }} ({{ course.choose_set.all|length }})</li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-lg-6 col-sm-6 col-6">
+                    <b>Kolizní študenti:</b>
+                    Nasledujúci zoznam obsahuje mená ľudí, ktorým nesedí počet kurzov.
+                    <ul>
+                        {% for student in invalid_students %}
+                        <li style="color: black;"><a href="{{ base_url }}/admin/choosing/choose/?q=&amp;student__id__exact={{ student.0.id }}&amp;choosing__id__exact={{ cur_choosing.id }}">{{ student.0.user.username }}</a>, {{ student.0.classroom }} ({{ student.1 }})</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% endif %}
+
+    <script>
+    function select_choosing() {
+        var choosing_id = $("select#selectChoosing").val();
+        if ( choosing_id )
+            location.href = "{{ base_url }}/root/overview/" + choosing_id;
+    }
+
+    </script>
+
+{% endblock %}

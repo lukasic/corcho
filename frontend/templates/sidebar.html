@@ -25,6 +25,7 @@
 	<ul class="nav nav-sidebar">
 		<li><p style="margin: 0 10px; color: lightblue;">{{ _("Administrator") }}</p></li>
 		<li><a href="/admin/">{{ _("Administration") }}</a></li>
+		<li {% if path == "/root/overview" %}class="active"{% endif %}><a href="/root/overview">{{ _("Overview") }}</a></li>
 	</ul>
 	{% endif %}
 
