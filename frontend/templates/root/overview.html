@@ -24,29 +24,97 @@
     <h3>Zápisy predmetov</h3>
     <div class="row">
         <div class="col-lg-12 col-sm-12 col-12">
-            <div class="row">
-                <div class="col-lg-6 col-sm-6 col-6">
-                    <b>Stav kurzov:</b>
-                    <ul>
-                        {% for course in cur_choosing.resolve_courses %}
-                        {% if course.choose_set.all|length > 11 %}
-                        <li style="color: green;">{{ course.name }} ({{ course.choose_set.all|length }})</li>
-                        {% else %}
-                        <li style="color: red;">{{ course.name }} ({{ course.choose_set.all|length }})</li>
+
+        <h3>Kolizní študenti</h3>
+        <p>Nasledujúci zoznam obsahuje mená ľudí, ktorým nesedí počet kurzov.</p>
+
+          <div class="table-responsive">
+            <table class="table table-striped" style="border: 1px solid #ddd;">
+              <thead>
+                <tr>
+                <th>{{ _("Student") }}</th>
+                <th class="width-10perc">{{ _("Classroom") }}</th>
+                <th class="width-10perc">{{ _("Chooses") }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for student in invalid_students %}
+                <tr>
+                    <td>{{ student.0.user.username }}</td>
+                    <td>{{ student.0.classroom }}</td>
+                    <td>{{ student.1 }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+        <h3>Počty zápisov</h3>
+
+          <div class="table-responsive">
+            <table class="table table-striped" style="border: 1px solid #ddd;">
+              <thead>
+                <tr>
+                <th>{{ _("Course") }}</th>
+                <th class="width-10perc">{{ _("Chooses") }}</th>
+                <th class="width-15perc">{{ _("Action") }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for course in cur_choosing.resolve_courses %}
+                <tr>
+                    {% if course.choose_set.all|length > 11 %}
+                    <td style="color: black">{{ course.name }}</td>
+                    <td style="color: black">{{ course.choose_set.all|length }}</td>
+                    {% else %}
+                    <td style="color: darkorange">{{ course.name }}</td>
+                    <td style="color: darkorange">{{ course.choose_set.all|length }}</td>
+                    {% endif %}
+                    <td>
+                        <a onclick="javascript:alert('Not implemented. TODO.')" class="btn btn-success btn-xs">{{ _("Accept") }}</a>
+                        <a onclick="javascript:alert('Not implemented. TODO.')" class="btn btn-danger btn-xs">{{ _("Deny") }}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+
+          <div class="table-responsive">
+            <table class="table table-striped" style="border: 1px solid #ddd;">
+              <thead>
+                <tr>
+                <th>{{ _("Course") }}</th>
+                <th>{{ _("Teacher") }}</th>
+                <th>{{ _("Chooses") }}</th>
+                <th class="width-15perc">{{ _("Action") }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for course_id, course_chooses in data.items %}
+                {% for teacher_id, teacher_chooses in course_chooses.items %}
+                <tr>
+                    {% if teacher_chooses|length > 11 %}
+                    <td style="color: black;">{{ teacher_chooses.0.choose.course }}</td>
+                    <td style="color: black;">{{ teacher_chooses.0.teacher.get_titled_name }}</td>
+                    <td style="color: black;">{{ teacher_chooses | length }}</td>
+                    {% else %}
+                    <td style="color: darkorange;">{{ teacher_chooses.0.choose.course }}</td>
+                    <td style="color: darkorange;">{{ teacher_chooses.0.teacher.get_titled_name }}</td>
+                    <td style="color: darkorange;">{{ teacher_chooses | length }}</td>
+                    {% endif %}
+                    <td>
+                        {% if teacher_chooses.0.teacher %}
+                        <a onclick="javascript:alert('Not implemented. TODO.')" class="btn btn-success btn-xs">{{ _("Accept") }}</a>
+                        <a onclick="javascript:alert('Not implemented. TODO.')" class="btn btn-danger btn-xs">{{ _("Deny") }}</a>
                         {% endif %}
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="col-lg-6 col-sm-6 col-6">
-                    <b>Kolizní študenti:</b>
-                    Nasledujúci zoznam obsahuje mená ľudí, ktorým nesedí počet kurzov.
-                    <ul>
-                        {% for student in invalid_students %}
-                        <li style="color: black;"><a href="{{ base_url }}/admin/choosing/choose/?q=&amp;student__id__exact={{ student.0.id }}&amp;choosing__id__exact={{ cur_choosing.id }}">{{ student.0.user.username }}</a>, {{ student.0.classroom }} ({{ student.1 }})</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+              </tbody>
+            </table>
         </div>
     </div>
     {% endif %}
