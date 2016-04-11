@@ -4,7 +4,7 @@ from django import forms
 from django.contrib import admin
 from django.utils.translation import gettext as _
 
-from app.choosing.models import Choosing, Choose, TeacherRequest
+from app.choosing.models import Choosing, Choose, TeacherRequest, DeniedCombination
 from app.courses.models import Course
 
 
@@ -45,6 +45,16 @@ class TeacherRequestAdmin(admin.ModelAdmin):
     search_fields = ("choose__student__user__username", "choose__course__name", "teacher__user__username")
 
 
+class DeniedCombinationAdmin(admin.ModelAdmin):
+    list_display = ('choosing', 'course', 'teacher')
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return self.list_display
+        return self.readonly_fields
+
+
 admin.site.register(Choosing, ChoosingAdmin)
 admin.site.register(Choose, ChooseAdmin)
 admin.site.register(TeacherRequest, TeacherRequestAdmin)
+admin.site.register(DeniedCombination, DeniedCombinationAdmin)

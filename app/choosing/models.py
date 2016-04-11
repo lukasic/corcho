@@ -229,3 +229,27 @@ class TeacherRequest(models.Model):
             return False
         return True if self.phase == 0 else False
 
+
+class DeniedCombination(models.Model):
+    """
+    Combinations of course-teacher, which does not have sufficient interest
+    and therefore this (teacher) requests will be denied.
+    """
+
+    choosing = models.ForeignKey(Choosing)
+    course = models.ForeignKey(Course)
+    teacher = models.ForeignKey(Teacher)
+
+    class Meta:
+        unique_together = ('choosing', 'course', 'teacher')
+
+    def clean(self):
+        if self.course not in self.choosing.course_category.course_set.all():
+            raise ValidationError("Course is not associated with choosing.")
+
+        if self.teacher not in self.course.teachers.all():
+            raise ValidationError("Selected teacher does not teach this course.")
+
+    def __str_(self):
+        return "{} / {}".format(self.course, self.teacher)
+
