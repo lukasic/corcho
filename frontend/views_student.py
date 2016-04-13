@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 
 from app.accounts.helpers import is_student
 from app.courses.models import Course, CourseCategory
-from app.choosing.models import Choosing, Choose, ChoosingPhase, TeacherRequest
+from app.choosing.models import Choosing, Choose, ChoosingPhase, TeacherRequest, ResolvedCourse
 from app.choosing.helpers import get_student_choosings
 
 
@@ -20,7 +20,7 @@ def phase2_choosing(request):
     groups = list()
     for choosing in confs:
         choosed_courses = dict()
-        denied_courses = choosing.denied_courses.all()
+        denied_courses = list()
         chooses_count = 0
 
         chooses = Choose.objects.filter(choosing=choosing, student__user=request.user).all()
@@ -36,6 +36,13 @@ def phase2_choosing(request):
             if course.id in choosed_courses.keys():
                 choose = choosed_courses[ course.id ]
             rows.append({ 'course': course, 'choose': choose })
+
+        dc = ResolvedCourse.objects.filter(
+            choosing=choosing,
+            accepted=False
+        )
+        for res in dc:
+            denied_courses.append(res.course)
 
         groups.append({
             'choosing': choosing,
