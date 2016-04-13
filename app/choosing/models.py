@@ -230,15 +230,37 @@ class TeacherRequest(models.Model):
         return True if self.phase == 0 else False
 
 
-class DeniedCombination(models.Model):
+class ResolvedCourse(models.Model):
     """
-    Combinations of course-teacher, which does not have sufficient interest
-    and therefore this (teacher) requests will be denied.
+    Combinations of choosing-course, with it's resolving state for continuing phases.
+    And yes, it could be merged with ResolvedCombination (with teacher.nullable=True).
+    """
+
+    choosing = models.ForeignKey(Choosing)
+    course = models.ForeignKey(Course)
+    accepted = models.BooleanField()
+
+    class Meta:
+        unique_together = ('choosing', 'course',)
+
+    def clean(self):
+        if self.course not in self.choosing.course_category.course_set.all():
+            raise ValidationError("Course is not associated with choosing.")
+
+    def __str_(self):
+        return "{} / {}".format(self.course, self.teacher)
+
+
+class ResolvedCombination(models.Model):
+    """
+    Combinations of choosing-course-teacher, with it's resolving state for
+    continuing phases.
     """
 
     choosing = models.ForeignKey(Choosing)
     course = models.ForeignKey(Course)
     teacher = models.ForeignKey(Teacher)
+    accepted = models.BooleanField()
 
     class Meta:
         unique_together = ('choosing', 'course', 'teacher')

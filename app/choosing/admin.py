@@ -4,7 +4,7 @@ from django import forms
 from django.contrib import admin
 from django.utils.translation import gettext as _
 
-from app.choosing.models import Choosing, Choose, TeacherRequest, DeniedCombination
+from app.choosing.models import Choosing, Choose, TeacherRequest, ResolvedCourse, ResolvedCombination
 from app.courses.models import Course
 
 
@@ -38,15 +38,39 @@ class ChooseAdmin(admin.ModelAdmin):
     list_filter = ("student", "course", "choosing", "phase")
     search_fields = ("student__user__username", "course__name", "choosing__name", "phase")
 
+    def get_readonly_fields(self, request, obj=None):
+        ro_fields = self.readonly_fields or list()
+        if obj:
+            ro_fields.append("student")
+            ro_fields.append("course")
+            ro_fields.append("choosing")
+        return ro_fields
+
 
 class TeacherRequestAdmin(admin.ModelAdmin):
     list_display = ("choose", "teacher", "phase", "created_at")
     list_filter = ("choose__choosing", "teacher", "phase")
     search_fields = ("choose__student__user__username", "choose__course__name", "teacher__user__username")
 
+    def get_readonly_fields(self, request, obj=None):
+        ro_fields = self.readonly_fields or list()
+        if obj:
+            ro_fields.append("choose")
+            ro_fields.append("teacher")
+        return ro_fields
 
-class DeniedCombinationAdmin(admin.ModelAdmin):
-    list_display = ('choosing', 'course', 'teacher')
+
+class ResolvedCourseAdmin(admin.ModelAdmin):
+    list_display = ('choosing', 'course', 'accepted')
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return self.list_display
+        return self.readonly_fields
+
+
+class ResolvedCombinationAdmin(admin.ModelAdmin):
+    list_display = ('choosing', 'course', 'teacher', 'accepted')
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
@@ -57,4 +81,5 @@ class DeniedCombinationAdmin(admin.ModelAdmin):
 admin.site.register(Choosing, ChoosingAdmin)
 admin.site.register(Choose, ChooseAdmin)
 admin.site.register(TeacherRequest, TeacherRequestAdmin)
-admin.site.register(DeniedCombination, DeniedCombinationAdmin)
+admin.site.register(ResolvedCourse, ResolvedCourseAdmin)
+admin.site.register(ResolvedCombination, ResolvedCombinationAdmin)

@@ -8,7 +8,7 @@ from rest_framework import serializers, viewsets, exceptions
 
 from app.accounts.models import Student
 from app.accounts.helpers import is_student
-from app.choosing.models import Choose, Choosing, TeacherRequest
+from app.choosing.models import Choose, Choosing, ResolvedCourse, TeacherRequest, ResolvedCombination
 from app.choosing.helpers import get_student_choosings
 from app.courses.models import Course
 
@@ -108,9 +108,28 @@ class TeacherRequestViewSet(viewsets.ModelViewSet):
     serializer_class = TeacherRequestSerializer
 
 
+class ResolvedCourseSerializer(ModelSerializerWithModelValidation):
+    class Meta:
+        model = ResolvedCourse
+
+class ResolvedCourseViewSet(viewsets.ModelViewSet):
+    queryset = ResolvedCourse.objects.all()
+    serializer_class = ResolvedCourseSerializer
+
+
+class ResolvedCombinationSerializer(ModelSerializerWithModelValidation):
+    class Meta:
+        model = ResolvedCombination
+
+
+class ResolvedCombinationViewSet(viewsets.ModelViewSet):
+    queryset = ResolvedCombination.objects.all()
+    serializer_class = ResolvedCombinationSerializer
+
 views_to_register = (
     (r'choose', ChooseViewset),
     (r'teacher-request', TeacherRequestViewSet),
+    (r'resolved-course', ResolvedCourseViewSet),
+    (r'resolved-combination', ResolvedCombinationViewSet)
 )
-
 

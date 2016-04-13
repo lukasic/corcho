@@ -28,6 +28,9 @@
         <h3>Kolizní študenti</h3>
         <p>Nasledujúci zoznam obsahuje mená ľudí, ktorým nesedí počet kurzov.</p>
 
+        <p>Tento zoznam je cachovaný, pretože jeho vyhodnotenie je náročné. Pri akýchkoľvek zmenách je nutné cache obnoviť.
+            <a href="#" onclick="reload_with_purge()">Obnoviť teraz</a></p>
+
           <div class="table-responsive">
             <table class="table table-striped" style="border: 1px solid #ddd;">
               <thead>
@@ -38,11 +41,11 @@
                 </tr>
               </thead>
               <tbody>
-                {% for student in invalid_students %}
+                {% for row in overview.incomplete %}
                 <tr>
-                    <td>{{ student.0.user.username }}</td>
-                    <td>{{ student.0.classroom }}</td>
-                    <td>{{ student.1 }}</td>
+                    <td>{{ row.0.user.username }}</td>
+                    <td>{{ row.0.classroom }}</td>
+                    <td>{{ row.1 }}</td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -61,18 +64,30 @@
                 </tr>
               </thead>
               <tbody>
-                {% for course in cur_choosing.resolve_courses %}
+                {% for course, course_ow in overview.courses.items %}
                 <tr>
-                    {% if course.choose_set.all|length > 11 %}
-                    <td style="color: black">{{ course.name }}</td>
-                    <td style="color: black">{{ course.choose_set.all|length }}</td>
+                    {% if course_ow.resolution %}
+                        {% if course_ow.accepted == 0 %}
+                            <td><font style="color: grey; text-decoration: line-through;">{{ course }}</font></td>
+                            <td><font style="color: grey; text-decoration: line-through;">{{ course_ow.size }}</font></td>
+                        {% else %}
+                            <td style="color: green">{{ course }}</td>
+                            <td style="color: green">{{ course_ow.size }}</td>
+                        {% endif %}
+                    {% elif course_ow.size > 11 %}
+                        <td style="color: black">{{ course }}</td>
+                        <td style="color: black">{{ course_ow.size }}</td>
                     {% else %}
-                    <td style="color: darkorange">{{ course.name }}</td>
-                    <td style="color: darkorange">{{ course.choose_set.all|length }}</td>
+                        <td style="color: darkorange">{{ course }}</td>
+                        <td style="color: darkorange">{{ course_ow.size }}</td>
                     {% endif %}
                     <td>
-                        <a onclick="javascript:alert('Not implemented. TODO.')" class="btn btn-success btn-xs">{{ _("Accept") }}</a>
-                        <a onclick="javascript:alert('Not implemented. TODO.')" class="btn btn-danger btn-xs">{{ _("Deny") }}</a>
+                        {% if course_ow.resolution %}
+                            <a onclick="resolve_course_revert({{ course_ow.resolution.id }})" class="btn btn-primary btn-xs">{{ _("Revert") }}</a>
+                        {% else %}
+                            <a onclick="resolve_course({{ cur_choosing.id }},{{ course.id }},1)" class="btn btn-success btn-xs">{{ _("Accept") }}</a>
+                            <a onclick="resolve_course({{ cur_choosing.id }},{{ course.id }},0)" class="btn btn-danger btn-xs">{{ _("Deny") }}</a>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
@@ -92,22 +107,53 @@
                 </tr>
               </thead>
               <tbody>
-                {% for course_id, course_chooses in data.items %}
-                {% for teacher_id, teacher_chooses in course_chooses.items %}
+                {% for course, course_ow in overview.courses.items %}
+                {% if course_ow.resolution and course_ow.accepted == 0 %}
+                    <tr>
+                        <td><font style="color: grey; text-decoration: line-through">{{ course }}</font></td>
+                        <td><font style="color: grey; text-decoration: line-through">-</font></td>
+                        <td><font style="color: grey; text-decoration: line-through">{{ course_ow.noteachers|length }}</font></td>
+                        <td></td>
+                    </tr>
+                {% elif course_ow.noteachers|length > 0 %}
+                    <tr>
+                        <td>{{ course }}</td>
+                        <td>-</td>
+                        <td>{{ course_ow.noteachers|length }}</td>
+                        <td></td>
+                    </tr>
+                {% endif %}
+                {% for teacher, teacher_ow in course_ow.teachers.items %}
                 <tr>
-                    {% if teacher_chooses|length > 11 %}
-                    <td style="color: black;">{{ teacher_chooses.0.choose.course }}</td>
-                    <td style="color: black;">{{ teacher_chooses.0.teacher.get_titled_name }}</td>
-                    <td style="color: black;">{{ teacher_chooses | length }}</td>
+                    {% if teacher_ow.resolution %}
+                        {% if teacher_ow.accepted == 0 %}
+                            <td><font style="color: grey; text-decoration: line-through;">{{ course }}</font></td>
+                            <td><font style="color: grey; text-decoration: line-through;">{{ teacher.get_titled_name }}</font></td>
+                            <td><font style="color: grey; text-decoration: line-through;">{{ teacher_ow.size }}</font></td>
+                        {% else %}
+                            <td><font style="color: green;">{{ course }}</font></td>
+                            <td><font style="color: green;">{{ teacher.get_titled_name }}</font></td>
+                            <td><font style="color: green;">{{ teacher_ow.size }}</font></td>
+                        {% endif %}
                     {% else %}
-                    <td style="color: darkorange;">{{ teacher_chooses.0.choose.course }}</td>
-                    <td style="color: darkorange;">{{ teacher_chooses.0.teacher.get_titled_name }}</td>
-                    <td style="color: darkorange;">{{ teacher_chooses | length }}</td>
+                        {% if teacher_ow.size > 11 %}
+                            <td style="color: black;">{{ course }}</td>
+                            <td style="color: black;">{{ teacher.get_titled_name }}</td>
+                            <td style="color: black;">{{ teacher_ow.size }}</td>
+                        {% else %}
+                            <td style="color: #c55;">{{ course }}</td>
+                            <td style="color: #c55;">{{ teacher.get_titled_name }}</td>
+                            <td style="color: #c55;">{{ teacher_ow.size }}</td>
+                        {% endif %}
                     {% endif %}
                     <td>
-                        {% if teacher_chooses.0.teacher %}
-                        <a onclick="javascript:alert('Not implemented. TODO.')" class="btn btn-success btn-xs">{{ _("Accept") }}</a>
-                        <a onclick="javascript:alert('Not implemented. TODO.')" class="btn btn-danger btn-xs">{{ _("Deny") }}</a>
+                        {% if course_ow.accepted == 1 %}
+                            {% if teacher_ow.accepted == None %}
+                            <a onclick="resolve_course_teacher({{ cur_choosing.id }},{{ course.id }},{{ teacher.id }},1)" class="btn btn-success btn-xs">{{ _("Accept") }}</a>
+                            <a onclick="resolve_course_teacher({{ cur_choosing.id }},{{ course.id }},{{ teacher.id }},0)" class="btn btn-danger btn-xs">{{ _("Deny") }}</a>
+                            {% else %}
+                            <a onclick="resolve_course_teacher_revert({{ teacher_ow.resolution.id }})" class="btn btn-primary btn-xs">{{ _("Revert") }}</a>
+                            {% endif %}
                         {% endif %}
                     </td>
                 </tr>
@@ -126,6 +172,54 @@
         var choosing_id = $("select#selectChoosing").val();
         if ( choosing_id )
             location.href = "{{ base_url }}/root/overview/" + choosing_id;
+    }
+
+    function reload_with_purge() {
+        var choosing_id = $("select#selectChoosing").val();
+        if ( choosing_id )
+            location.href = "{{ base_url }}/root/overview/" + choosing_id + "?purge";
+    }
+
+    function resolve_course(choosing_id, course_id, resolution)
+    {
+        $.ajax({
+            url: '/api/resolved-course/',
+            type: 'POST',
+            data: 'choosing='+choosing_id+"&course="+course_id+"&accepted="+resolution,
+            success: function() { location.reload(); },
+            error: function(jqXHR, textStatus, errorThrown) { console.log(jqXHR); console.log(textStatus); console.log(errorThrown); }
+        });
+    }
+
+    function resolve_course_revert(resolution_id)
+    {
+        $.ajax({
+            url: '/api/resolved-course/'+resolution_id,
+            type: 'DELETE',
+            success: function() { location.reload(); },
+            error: function(jqXHR, textStatus, errorThrown) { console.log(jqXHR); console.log(textStatus); console.log(errorThrown); }
+        });
+    }
+
+    function resolve_course_teacher(choosing_id, course_id, teacher_id, resolution)
+    {
+        $.ajax({
+            url: '/api/resolved-combination/',
+            type: 'POST',
+            data: 'choosing='+choosing_id+"&course="+course_id+"&teacher="+teacher_id+"&accepted="+resolution,
+            success: function() { location.reload(); },
+            error: function(jqXHR, textStatus, errorThrown) { console.log(jqXHR); console.log(textStatus); console.log(errorThrown); }
+        });
+    }
+
+    function resolve_course_teacher_revert(resolution_id)
+    {
+        $.ajax({
+            url: '/api/resolved-combination/'+resolution_id,
+            type: 'DELETE',
+            success: function() { location.reload(); },
+            error: function(jqXHR, textStatus, errorThrown) { console.log(jqXHR); console.log(textStatus); console.log(errorThrown); }
+        });
     }
 
     </script>
