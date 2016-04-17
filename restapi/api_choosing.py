@@ -90,14 +90,14 @@ class TeacherRequestSerializer(serializers.Serializer):
         # todo: count() > 0
         choose = filtered.all()[0]
 
+        teacher_id = validated_data.get("teacher_id")
+        teacher = Teacher.objects.filter(id=teacher_id)
+        if teacher.count() != 1 or teacher.get() not in choose.course.teachers.all():
+            raise exceptions.NotFound()
+
         req = TeacherRequest.objects.filter(choose=choose)
         if req:
             req = req[0]
-            teacher_id = validated_data.get("teacher_id")
-
-            teacher = Teacher.objects.filter(id=teacher_id)
-            if teacher.count() == 0 or teacher not in choose.course.teacher_set.all():
-                raise exceptions.NotFound()
 
             if req.phase == 1:
                 raise Exception(_("Cannot change."))
