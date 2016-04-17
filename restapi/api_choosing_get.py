@@ -55,6 +55,7 @@ class CourseTeachersSerializer(serializers.Serializer):
 class CourseTeachersViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseTeachersSerializer
+    http_method_names = ['get', 'head', 'options']
 
 
 views_to_register = (

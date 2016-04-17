@@ -6,13 +6,13 @@ from django.utils.translation import ugettext as _
 
 from rest_framework import serializers, viewsets, exceptions
 
-from app.accounts.models import Student
+from app.accounts.models import Student, Teacher
 from app.accounts.helpers import is_student
 from app.choosing.models import Choose, Choosing, ResolvedCourse, TeacherRequest, ResolvedCombination
 from app.choosing.helpers import get_student_choosings
 from app.courses.models import Course
 
-from restapi.common import ModelSerializerWithModelValidation, IsStudentUser
+from restapi.common import ModelSerializerWithModelValidation, IsStudentUser, SuperUserOnly
 
 
 class ChooseSerializer(ModelSerializerWithModelValidation):
@@ -55,7 +55,7 @@ class ChooseViewset(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_superuser:
-            return super(ChooseViewset, self).get_queryset()
+            return super(self.__class__, self).get_queryset()
         else:
             return Choose.objects.filter(student=self.request.user.student)
 
@@ -82,10 +82,22 @@ class TeacherRequestSerializer(serializers.Serializer):
         fields = ("choose", "teacher")
 
     def create(self, validated_data):
-        req = TeacherRequest.objects.filter(choose_id=validated_data.get("choose_id"))
+        student = self.context['request'].user.student
+        filtered = Choose.objects.filter(id=validated_data.get("choose_id"), student=student)
+        if filtered.count() == 0:
+            raise exceptions.NotFound()
+
+        # todo: count() > 0
+        choose = filtered.all()[0]
+
+        req = TeacherRequest.objects.filter(choose=choose)
         if req:
             req = req[0]
             teacher_id = validated_data.get("teacher_id")
+
+            teacher = Teacher.objects.filter(id=teacher_id)
+            if teacher.count() == 0 or teacher not in choose.course.teacher_set.all():
+                raise exceptions.NotFound()
 
             if req.phase == 1:
                 raise Exception(_("Cannot change."))
@@ -107,6 +119,17 @@ class TeacherRequestViewSet(viewsets.ModelViewSet):
     queryset = TeacherRequest.objects.all()
     serializer_class = TeacherRequestSerializer
 
+    def get_serializer_context(self):
+        context = super(self.__class__, self).get_serializer_context()
+        context['request'] = self.request
+        return context
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return super(self.__class__, self).get_queryset()
+        else:
+            return TeacherRequest.objects.filter(choose__student=self.request.user.student)
+
 
 class ResolvedCourseSerializer(ModelSerializerWithModelValidation):
     class Meta:
@@ -115,6 +138,7 @@ class ResolvedCourseSerializer(ModelSerializerWithModelValidation):
 class ResolvedCourseViewSet(viewsets.ModelViewSet):
     queryset = ResolvedCourse.objects.all()
     serializer_class = ResolvedCourseSerializer
+    permission_classes = (SuperUserOnly,)
 
 
 class ResolvedCombinationSerializer(ModelSerializerWithModelValidation):
@@ -125,6 +149,8 @@ class ResolvedCombinationSerializer(ModelSerializerWithModelValidation):
 class ResolvedCombinationViewSet(viewsets.ModelViewSet):
     queryset = ResolvedCombination.objects.all()
     serializer_class = ResolvedCombinationSerializer
+    permission_classes = (SuperUserOnly,)
+
 
 views_to_register = (
     (r'choose', ChooseViewset),

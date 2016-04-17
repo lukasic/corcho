@@ -17,7 +17,13 @@ class IsStudentUser(BasePermission):
         return request.user and hasattr(request.user, 'student')
 
 
+class SuperUserOnly(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_superuser
+
+
 # temporary disable csrf hack
 class CsrfExemptSessionAuthentication(SessionAuthentication):
     def enforce_csrf(self, request):
         return
+
